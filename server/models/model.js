@@ -27,6 +27,11 @@ const userSchema = new Schema({
             type : String,
             required : true,
             trim : true
+        },
+        role: {
+            type: String,
+            default: "client", // 0 for user, 1 for admin
+            enum: ["admin","client"]
         }
     },
     {timestamps:true}
