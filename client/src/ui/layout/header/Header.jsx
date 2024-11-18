@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 const Header = () => {
   return (
-    <nav className='bg-white flex justify-between'>
+    <nav className='bg-white flex justify-between items-center'>
       <div>
         <Image
           src={"/doorbelll-loog-black.svg"}
