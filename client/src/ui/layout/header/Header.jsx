@@ -7,9 +7,9 @@ const Header = () => {
     <nav className='bg-white flex justify-between items-center'>
       <div>
         <Image
-          src={"/doorbelll-loog-black.svg"}
-          width={242}
-          height={52}
+          src={"/logoBlack.png"}
+          width={204}
+          height={48}
           alt="Logo"
           className=""
         />

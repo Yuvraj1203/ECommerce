@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./config/dbconn.js"
 import authRoutes from "./routes/authRoutes.js"
+import cors from 'cors'
 
 const app = express();
 
@@ -12,6 +13,7 @@ const port = process.env.PORT || 8080;
 
 //read about this 
 //middleware
+app.use(cors());
 app.use(express.json());
 
 //use routes

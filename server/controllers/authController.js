@@ -35,7 +35,7 @@ const loginController = async(req,res) => {
         const isPassMatch = await comparePassword(password,user.password);
         if(!isPassMatch) return res.status(500).send({message:"password is incorrect"});
         //generate token
-        const token = await JWT.sign({_id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"});
+        const token = JWT.sign({_id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"});
         return res.status(200).send({
             message:"login successfull",
             user,

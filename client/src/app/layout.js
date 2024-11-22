@@ -1,15 +1,12 @@
-import localFont from "next/font/local";
+import {Quicksand} from "next/font/google"
+import { ToastContainer } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const quickSand = Quicksand({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: 'swap',
 });
 
 export const metadata = {
@@ -21,8 +18,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${quickSand.className} antialiased min-h-[100vh]`}
       >
+        <ToastContainer />
         {children}
       </body>
     </html>
