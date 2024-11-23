@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from './Navbar'
 import Image from 'next/image'
+import AuthButton from './AuthButton'
 
 const Header = () => {
   return (
@@ -15,9 +16,7 @@ const Header = () => {
         />
       </div>
       <Navbar />
-      <div>
-        Register
-      </div>
+      <AuthButton />
     </nav>
   )
 }

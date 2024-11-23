@@ -4,16 +4,16 @@ import JWT from "jsonwebtoken";
 
 const registerController = async(req,res) => {
     try {
-        const {name,email,phone,password,address,role} = req.body;
+        const {name,email,phone,password} = req.body;
         //check every field is filled
-        if(!name || !email || !phone || !password || !address || !role) return res.send({message:"EVERY fiEELD IS COMPULSORY, PLEASE FILL EACH FIELD"});
+        if(!name || !email || !phone || !password) return res.send({message:"EVERY fiEELD IS COMPULSORY, PLEASE FILL EACH FIELD"});
         //check if already exist
         const existingUser = await users.findOne({email});
         if(existingUser) return res.send({message:"EMAIL ALREADY REGISTERED"});
         //hash pass
         const hashedPass = await HashPassword(password);
         //register
-        const user = await new users({name,email,phone,password:hashedPass,address,role}).save();
+        const user = await new users({name,email,phone,password:hashedPass}).save();
         return res.status(200).send({message:"User registration Successful",user})
     } catch (error) {
         console.log("error while registration from controller =>=> ",error);

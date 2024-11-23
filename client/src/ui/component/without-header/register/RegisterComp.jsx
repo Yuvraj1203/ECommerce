@@ -1,14 +1,13 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {Button, Input} from "@nextui-org/react";
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import {z} from 'zod'
 import { useRouter } from 'next/navigation'
+import { AuthContext, useAuth } from '@/context/AuthContextProvider';
 
-const inputData = [
-    {title : "Username", label:"Login Username"}
-]
+
 const RegisterComp = () => {
   const [isLogin,setIsLogin] = useState(true);
 
@@ -26,6 +25,7 @@ const RegisterComp = () => {
 }
 
 const Login = ({setIsLogin}) => {
+  const [user,setUser] = useContext(useAuth);
   const [isVisible, setIsVisible] = useState(false);
   const [loginForm,setLoginForm] = useState({});
   const router = useRouter();
@@ -55,64 +55,33 @@ const Login = ({setIsLogin}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!loginValidation()) return;
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`,{
-      method : 'POST',
-      headers : {
-        'Content-Type' : 'application/json',
-      },
-      body : JSON.stringify({email:loginForm.username,password:loginForm.password})
-    })
-    const data = await response.json();
-
-    if(data.message == "login successfull"){
-      toast.success("Login Successfully");
-      router.push('/');
-    }else{
-      toast.error("not valid credentials");
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_API}/login`,{
+        method : 'POST',
+        headers : {
+          'Content-Type' : 'application/json',
+        },
+        body : JSON.stringify({email:loginForm.username,password:loginForm.password})
+      })
+      const data = await response.json();
+        if(data.message == "login successfull"){
+          setUser(data.user);
+          router.push('/');
+          toast.success("Login Successfully");
+        }else{
+          toast.error("not valid credentials");
+        }    
+        console.log("login successfull client",await response.json());
+    } catch (error) {
+      console.log(error);
     }
 
-    console.log("login successfull client",await response.json());
   };
 
   return(
-    <form onSubmit={handleSubmit} className='gap-2 md:gap-4 flex flex-col items-center' >
-        <Input 
-          onChange={handleLoginData}
-          name={"username"}
-          size='md' 
-          type="email" 
-          variant={"bordered"} 
-          labelPlacement='outside' 
-          label="Email" 
-          placeholder='Email' 
-          classNames={{
-            inputWrapper:"rounded-md"
-          }}
-          required
-        />
-        <Input
-          onChange={handleLoginData}
-          name='password'
-          label="Password"
-          variant="bordered"
-          labelPlacement='outside' 
-          placeholder='Password'
-          size='md'
-          classNames={{
-            inputWrapper:"rounded-md"
-          }}
-          required
-          endContent={
-            <button className="focus:outline-none" type="button" onClick={()=>setIsVisible(!isVisible)} aria-label="toggle password visibility">
-              {isVisible ? (
-                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-              ) : (
-                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-              )}
-            </button>
-          }
-          type={isVisible ? "text" : "password"}
-        />
+    <form onSubmit={handleSubmit} className='gap-2 md:gap-4 flex flex-col items-center w-full' >
+        <InputField handleData={handleLoginData} name={"username"} label={"Email"} placeholder={'Email'} type={"email"} />
+        <InputField handleData={handleLoginData} name={"password"} label={"Password"} placeholder={'Password'} type={"password"} />
         <Link href={"#"} className='text-[#DB4444] font-semibold text-sm self-end hover:text-[#b23636] hover:underline duration-300' >Forget Password?</Link>
         <Button type='submit' className="bg-[#DB4444] text-white text-sm md:text-base font-semibold rounded-md w-full">
           Login
@@ -123,72 +92,91 @@ const Login = ({setIsLogin}) => {
 }
 
 const SignUp = ({setIsLogin}) => {
-  const [isVisible, setIsVisible] = useState(false);
   const [signupForm,setSignupForm] = useState({});
 
-  const handleLoginData = (e) => {
+  const handleSignupData = (e) => {
     const {name,value} = e.target;
     setSignupForm((prevData)=>({...prevData,[name]:value}))
   }
 
-  const handleSubmit = () => {
-    return null;
+  const signupZod = z.object({
+    name : z.string().min(3),
+    phone : z.coerce.number().min(10 ** 7).max(10 ** 16),
+    email : z.string().email(),
+    password : z.string().min(6)
+  })
+
+  const signupValidation = () => {
+    try {
+      signupZod.parse(signupForm);
+      return true;
+    } catch (error) {
+      console.log(error,"=>",error.errors);
+      error.errors.forEach(err=>toast.error(err.message));
+      return false;
+    }
+  }
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    if(signupValidation()){
+      toast.success(signupValidation())
+      const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_API}/register`,{
+        method : "POST",
+        headers : {
+          'Content-Type' : 'application/json',
+        },
+        body : JSON.stringify(signupForm),
+      })
+
+      const data = await response.json();
+      console.log(data);
+      if(response.message == "User registration Successful"){
+        toast.success("Registration Successful");
+        router.push('/');
+      }else{
+        toast.error(response.message);
+      }
+
+    }else{
+      toast.error("Please enter valid information")
+    }
   }
 
   return(
-    <>
+    <form onSubmit={handleSubmit} className='gap-2 md:gap-4 flex flex-col items-center w-full'>
         {/* Name  */}
-        <Input 
-          onChange={handleLoginData}
-          name={"name"}
-          size='md' 
-          type="text" 
-          variant={"bordered"} 
-          labelPlacement='outside' 
-          label="Name" 
-          placeholder='Enter your name' 
-          classNames={{
-            inputWrapper:"rounded-md"
-          }}
-        />
+        <InputField handleData={handleSignupData} name={"name"} label={"Name"} placeholder={'Enter Your Name'} type={"text"} />
         {/* phone number  */}
-        <Input 
-          onChange={handleLoginData}
-          name={"phone"}
-          size='md' 
-          type="number" 
-          variant={"bordered"} 
-          labelPlacement='outside' 
-          label="Phone Number" 
-          placeholder='Enter your number' 
-          classNames={{
-            inputWrapper:"rounded-md"
-          }}
-        />
-        {/* email  */}
-        <Input 
-          onChange={handleLoginData}
-          name={"email"}
-          size='md' 
-          type="email" 
-          variant={"bordered"} 
-          labelPlacement='outside' 
-          label="Email" 
-          placeholder='Enter your email' 
-          classNames={{
-            inputWrapper:"rounded-md"
-          }}
-        />
+        <InputField handleData={handleSignupData} name={"phone"} label={"Phone"} placeholder={'Phone'} type={"number"} />
+        {/* email  */}        
+        <InputField handleData={handleSignupData} name={"email"} label={"Email"} placeholder={'Email'} type={"email"} />
+        {/* password */}
+        <InputField handleData={handleSignupData} name={"password"} label={"Password"} placeholder={'Password'} type={"password"} />
+        <Link href={"#"} className='text-[#DB4444] font-semibold text-sm self-end hover:text-[#b23636] hover:underline duration-300' >Forget Password?</Link>
+        <Button onClick={handleSubmit} type='submit' className="bg-[#DB4444] text-white text-sm md:text-base font-semibold rounded-md w-full">
+          Sign up
+        </Button>
+        <p className='text-sm'>Already an account? <span onClick={()=>setIsLogin((prev)=>!prev)} className='font-bold cursor-pointer hover:underline duration-300'>Log in</span> now.</p>
+    </form>
+  )
+}
+
+const InputField = ({handleData,name,label,placeholder,type}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  return(
+    <>
+      {type == "password" ?
         <Input
-          onChange={handleLoginData}
-          name='password'
-          label="Password"
+          onChange={handleData}
+          name={name}
+          label={label}
           variant="bordered"
           labelPlacement='outside' 
-          placeholder='Enter password'
+          placeholder={placeholder}
           size='md'
           classNames={{
-            inputWrapper:"rounded-md"
+            inputWrapper:"rounded-md group-data-[focus=true]:shadow-[0_0_1px_0px_#DB4444] data-[hover=true]:border-[#dc9f9f] group-data-[focus=true]:border-[#DB4444]"
           }}
           endContent={
             <button className="focus:outline-none" type="button" onClick={()=>setIsVisible(!isVisible)} aria-label="toggle password visibility">
@@ -201,16 +189,28 @@ const SignUp = ({setIsLogin}) => {
           }
           type={isVisible ? "text" : "password"}
         />
-        <Link href={"#"} className='text-[#DB4444] font-semibold text-sm self-end hover:text-[#b23636] hover:underline duration-300' >Forget Password?</Link>
-        <Button onClick={handleSubmit} type='submit' className="bg-[#DB4444] text-white text-sm md:text-base font-semibold rounded-md w-full">
-          Sign up
-        </Button>
-        <p className='text-sm'>Already an account? <span onClick={()=>setIsLogin((prev)=>!prev)} className='font-bold cursor-pointer hover:underline duration-300'>Log in</span> now.</p>
+        :
+        <Input 
+          onChange={handleData}
+          name={name}
+          size='md' 
+          type={type} 
+          variant={"bordered"} 
+          labelPlacement='outside' 
+          label={label}
+          placeholder={placeholder}
+          classNames={{
+            inputWrapper:"rounded-md group-data-[focus=true]:shadow-[0_0_1px_0px_#DB4444] data-[hover=true]:border-[#dc9f9f] group-data-[focus=true]:border-[#DB4444]"
+          }}
+          
+          required
+        />
+      }
     </>
   )
 }
-
-export const EyeSlashFilledIcon = (props) => (
+ 
+const EyeSlashFilledIcon = (props) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -244,7 +244,7 @@ export const EyeSlashFilledIcon = (props) => (
   </svg>
 );
 
-export const EyeFilledIcon = (props) => (
+const EyeFilledIcon = (props) => (
   <svg
     aria-hidden="true"
     fill="none"

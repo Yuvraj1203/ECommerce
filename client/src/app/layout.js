@@ -2,6 +2,7 @@ import {Quicksand} from "next/font/google"
 import { ToastContainer } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
+import {AuthContextProvider} from "@/context/AuthContextProvider";
 
 const quickSand = Quicksand({
   weight: ["400", "500", "600", "700"],
@@ -20,8 +21,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${quickSand.className} antialiased min-h-[100vh]`}
       >
-        <ToastContainer />
-        {children}
+        <AuthContextProvider>
+          <ToastContainer />
+          {children}
+        </AuthContextProvider>
       </body>
     </html>
   );
