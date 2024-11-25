@@ -1,11 +1,11 @@
 "use client"
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {Button, Input} from "@nextui-org/react";
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import {z} from 'zod'
 import { useRouter } from 'next/navigation'
-import { AuthContext, useAuth } from '@/context/AuthContextProvider';
+import { AuthContext } from '@/context/AuthContextProvider';
 
 
 const RegisterComp = () => {
@@ -25,7 +25,7 @@ const RegisterComp = () => {
 }
 
 const Login = ({setIsLogin}) => {
-  const [user,setUser] = useContext(useAuth);
+  const {user,setUser} = useContext(AuthContext);
   const [isVisible, setIsVisible] = useState(false);
   const [loginForm,setLoginForm] = useState({});
   const router = useRouter();
@@ -66,6 +66,7 @@ const Login = ({setIsLogin}) => {
       const data = await response.json();
         if(data.message == "login successfull"){
           setUser(data.user);
+          localStorage.setItem('user',JSON.stringify(data.user));
           router.push('/');
           toast.success("Login Successfully");
         }else{
@@ -93,6 +94,7 @@ const Login = ({setIsLogin}) => {
 
 const SignUp = ({setIsLogin}) => {
   const [signupForm,setSignupForm] = useState({});
+  const router = useRouter();
 
   const handleSignupData = (e) => {
     const {name,value} = e.target;
@@ -120,7 +122,7 @@ const SignUp = ({setIsLogin}) => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     if(signupValidation()){
-      toast.success(signupValidation())
+      // toast.success(signupValidation())
       const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_API}/register`,{
         method : "POST",
         headers : {
@@ -131,11 +133,11 @@ const SignUp = ({setIsLogin}) => {
 
       const data = await response.json();
       console.log(data);
-      if(response.message == "User registration Successful"){
+      if(data.message == "User registration Successful"){
         toast.success("Registration Successful");
         router.push('/');
       }else{
-        toast.error(response.message);
+        toast.error(data.message);
       }
 
     }else{

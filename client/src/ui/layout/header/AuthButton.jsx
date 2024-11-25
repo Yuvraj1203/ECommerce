@@ -1,13 +1,14 @@
 'use client'
-import { useAuth } from '@/context/AuthContextProvider';
+import { AuthContext } from '@/context/AuthContextProvider';
 import { Button } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
 import React, { useContext } from 'react'
 
 const AuthButton = () => {
     const redirect = useRouter();
-    const [user,setUser] = useContext(useAuth);
+    const {user,setUser} = useContext(AuthContext);
     const handleLogout = () => {
+        localStorage.removeItem('user');
         setUser(null);
     }
     return(

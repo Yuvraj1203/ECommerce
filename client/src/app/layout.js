@@ -2,7 +2,7 @@ import {Quicksand} from "next/font/google"
 import { ToastContainer } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
-import {AuthContextProvider} from "@/context/AuthContextProvider";
+import AuthContextProvider from "@/context/AuthContextProvider";
 
 const quickSand = Quicksand({
   weight: ["400", "500", "600", "700"],
