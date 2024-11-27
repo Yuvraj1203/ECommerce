@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import {z} from 'zod'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '@/context/AuthContextProvider';
+import Cookies from 'js-cookie';
 
 
 const RegisterComp = () => {
@@ -67,8 +68,10 @@ const Login = ({setIsLogin}) => {
         if(data.message == "login successfull"){
           setUser(data.user);
           localStorage.setItem('user',JSON.stringify(data.user));
+          Cookies.set('userToken',data.token,{expires:7});
           router.push('/');
-          toast.success("Login Successfully");
+          router.refresh();
+          // toast.success("Login Successfully");
         }else{
           toast.error("not valid credentials");
         }    
