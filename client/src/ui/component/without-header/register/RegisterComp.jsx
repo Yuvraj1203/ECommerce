@@ -7,6 +7,9 @@ import {z} from 'zod'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '@/context/AuthContextProvider';
 import Cookies from 'js-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { openForgetModal } from '@/redux/slices/forgetModalSlice';
+import ForgetPassModal from './ForgetPassModal';
 
 
 const RegisterComp = () => {
@@ -27,18 +30,30 @@ const RegisterComp = () => {
 
 const Login = ({setIsLogin}) => {
   const {user,setUser} = useContext(AuthContext);
-  const [isVisible, setIsVisible] = useState(false);
+  const [ifForget, setIfForget] = useState(false);
   const [loginForm,setLoginForm] = useState({});
+  const [forgetForm,setForgetForm] = useState({});
   const router = useRouter();
+  const forgetModalState = useSelector(state => state.forgetModal.isOpen);
+  console.log(forgetModalState,"=================>")
+  const dispatch = useDispatch();
 
   const loginZod = z.object({
     username : z.string().email('Invalid email format').transform(username => username.trim().toLowerCase()),
     password: z.string().min(6),
   })
 
+  const forgetZod = z.object({
+    username : z.string().email('Invalid email format').transform(username => username.trim().toLowerCase()),
+  })
+
   const handleLoginData = (e) => {
     const {name,value} = e.target;
-    setLoginForm((prevData)=>({...prevData,[name]:value}))
+    if(ifForget){
+      setForgetForm({[name]:value})
+    }else{
+      setLoginForm((prevData)=>({...prevData,[name]:value}))
+    }
   }
 
   const loginValidation = () => {
@@ -55,6 +70,13 @@ const Login = ({setIsLogin}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(ifForget){
+      forgetZod.parse(forgetForm);
+      //otp sending functionality
+      //open modal for otp direct cause i dnt have otp send functionality
+      dispatch(openForgetModal());
+      return;
+    }
     if(!loginValidation()) return;
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_API}/login`,{
@@ -85,11 +107,16 @@ const Login = ({setIsLogin}) => {
   return(
     <form onSubmit={handleSubmit} className='gap-2 md:gap-4 flex flex-col items-center w-full' >
         <InputField handleData={handleLoginData} name={"username"} label={"Email"} placeholder={'Email'} type={"email"} />
-        <InputField handleData={handleLoginData} name={"password"} label={"Password"} placeholder={'Password'} type={"password"} />
-        <Link href={"#"} className='text-[#DB4444] font-semibold text-sm self-end hover:text-[#b23636] hover:underline duration-300' >Forget Password?</Link>
+        {!ifForget && 
+          <>
+            <InputField handleData={handleLoginData} name={"password"} label={"Password"} placeholder={'Password'} type={"password"} />
+          </>
+        }
+        <p onClick={()=>setIfForget(!ifForget)} href={"#"} className='text-[#DB4444] font-semibold text-sm self-end hover:text-[#b23636] hover:underline duration-300' >{ifForget ? "Log in":"Forget Password?"}</p>
         <Button type='submit' className="bg-[#DB4444] text-white text-sm md:text-base font-semibold rounded-md w-full">
-          Login
+          {ifForget ? "Send OTP":"Login"}
         </Button>
+        <ForgetPassModal isOpen={forgetModalState} />
         <p className='text-sm'>Don't have an account? <span onClick={()=>setIsLogin((prev)=>!prev)} className='font-bold cursor-pointer hover:underline duration-300'>Sign up</span> for free.</p>
     </form>
   )
@@ -158,7 +185,6 @@ const SignUp = ({setIsLogin}) => {
         <InputField handleData={handleSignupData} name={"email"} label={"Email"} placeholder={'Email'} type={"email"} />
         {/* password */}
         <InputField handleData={handleSignupData} name={"password"} label={"Password"} placeholder={'Password'} type={"password"} />
-        <Link href={"#"} className='text-[#DB4444] font-semibold text-sm self-end hover:text-[#b23636] hover:underline duration-300' >Forget Password?</Link>
         <Button onClick={handleSubmit} type='submit' className="bg-[#DB4444] text-white text-sm md:text-base font-semibold rounded-md w-full">
           Sign up
         </Button>

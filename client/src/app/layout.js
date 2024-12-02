@@ -3,6 +3,9 @@ import { ToastContainer } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
 import AuthContextProvider from "@/context/AuthContextProvider";
+import ReduxProvider from "@/redux/ReduxProvider";
+
+
 
 const quickSand = Quicksand({
   weight: ["400", "500", "600", "700"],
@@ -21,10 +24,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${quickSand.className} antialiased min-h-[100vh]`}
       >
-        <AuthContextProvider>
-          <ToastContainer />
-          {children}
-        </AuthContextProvider>
+        <ReduxProvider>
+          <AuthContextProvider>
+            <ToastContainer />
+            {children}
+          </AuthContextProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
