@@ -1,0 +1,60 @@
+1️⃣ What is hoisting?
+2️⃣ What are closures?
+3️⃣ Difference between var, let, and const.
+4️⃣ Explain event delegation.
+5️⃣ Difference between == and ===.
+6️⃣ What are promises?
+7️⃣ What is async/await?
+8️⃣ What is prototype inheritance?
+9️⃣ Explain the event loop.
+🔟 How does JavaScript handle asynchronous operations?
+1️⃣1️⃣ What is the difference between map(), filter(), and forEach()?
+1️⃣2️⃣ What is this in JavaScript?
+1️⃣3️⃣ What are JavaScript modules?
+1️⃣4️⃣ Explain debounce and throttle.
+1️⃣5️⃣ What are arrow functions?
+1️⃣6️⃣ Difference between call(), apply(), and bind().
+1️⃣7️⃣ What are higher-order functions?
+1️⃣8️⃣ Explain immutability in JavaScript.
+1️⃣9️⃣ Difference between setTimeout and setInterval.
+2️⃣0️⃣ How do you handle errors?
+2️⃣1️⃣ Difference between deep copy and shallow copy.
+2️⃣2️⃣ What is the typeof operator?
+2️⃣3️⃣ What are template literals?
+2️⃣4️⃣ What are IIFEs (Immediately Invoked Function Expressions)?
+2️⃣5️⃣ Explain destructuring assignment.
+2️⃣6️⃣ What is the spread/rest operator?
+2️⃣7️⃣ How does the new keyword work?
+2️⃣8️⃣ Synchronous vs. asynchronous code.
+2️⃣9️⃣ Difference between localStorage, sessionStorage, and cookies.
+3️⃣0️⃣ What is the Symbol type?
+3️⃣1️⃣ What are generators?
+3️⃣2️⃣ Function declaration vs. function expression.
+3️⃣3️⃣ How does JavaScript handle scope and scope chains?
+3️⃣4️⃣ What are default parameters?
+3️⃣5️⃣ Difference between null and undefined.
+3️⃣6️⃣ What are WeakMap and WeakSet?
+3️⃣7️⃣ Purpose of Object.freeze().
+3️⃣8️⃣ Use of Object.keys(), Object.values(), and Object.entries().
+3️⃣9️⃣ What is a polyfill?
+4️⃣0️⃣ How do Promise.all() and Promise.race() work?
+4️⃣1️⃣ What is memoization?
+4️⃣2️⃣ Explain the difference between mutable and immutable objects.
+4️⃣3️⃣ How does Array.reduce() work?
+4️⃣4️⃣ What is currying?
+4️⃣5️⃣ What is the purpose of the try...catch block?
+4️⃣6️⃣ Explain the difference between for...in and for...of.
+4️⃣7️⃣ How does garbage collection work in JavaScript?
+4️⃣8️⃣ What is the difference between Object.create() and class inheritance?
+4️⃣9️⃣ What is a callback function?
+5️⃣0️⃣ How does Promise.any() work?
+5️⃣1️⃣ What are dynamic imports in JavaScript?
+5️⃣2️⃣ How does the fetch API work?
+5️⃣3️⃣ What are microtasks and macrotasks?
+5️⃣4️⃣ How does Array.splice() differ from Array.slice()?
+5️⃣5️⃣ What are tagged templates?
+5️⃣6️⃣ How do you detect if an object is an array?
+5️⃣7️⃣ What is event bubbling and capturing?
+5️⃣8️⃣ What is the difference between ES5 and ES6?
+5️⃣9️⃣ Explain Function.prototype methods.
+6️⃣0️⃣ How does JSON.stringify() and JSON.parse() work?
